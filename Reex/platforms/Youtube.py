@@ -278,6 +278,7 @@ class YouTubeAPI:
                 "no_warnings": True,
                 "prefer_ffmpeg": True,
                 "merge_output_format": "mp4",
+                "cookiefile": cook,
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
             x.download([link])
@@ -291,6 +292,7 @@ class YouTubeAPI:
                 "nocheckcertificate": True,
                 "quiet": True,
                 "no_warnings": True,
+                "cookiefile": cook,
                 "prefer_ffmpeg": True,
                 "postprocessors": [
                     {
