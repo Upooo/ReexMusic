@@ -1,7 +1,5 @@
-import os
 import random
 import string
-import traceback
 
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InputMediaPhoto, Message
@@ -447,9 +445,7 @@ async def play_music(client, CallbackQuery, _):
             return
     try:
         chat_id, channel = await get_channeplayCB(_, cplay, CallbackQuery)
-    except Exception as e:
-        print(f"Error get_channeplayCB: {e}")
-        traceback.print_exc()
+    except:
         return
     user_name = CallbackQuery.from_user.first_name
     try:
@@ -462,9 +458,7 @@ async def play_music(client, CallbackQuery, _):
     )
     try:
         details, track_id = await YouTube.track(vidid, True)
-    except Exception as e:
-        print(f"Error YouTube.track: {e}")
-        traceback.print_exc()
+    except:
         return await mystic.edit_text(_["play_3"])
     if details["duration_min"]:
         duration_sec = time_to_seconds(details["duration_min"])
@@ -487,14 +481,7 @@ async def play_music(client, CallbackQuery, _):
         )
     video = True if mode == "v" else None
     ffplay = True if fplay == "f" else None
-
     try:
-        # Contoh: cek file sebelum streaming, jika file path ada di details["filepath"]
-        if "filepath" in details:
-            filepath = details["filepath"]
-            if not os.path.exists(filepath):
-                print(f"File not found: {filepath}")
-                return await mystic.edit_text("File lagu/video tidak ditemukan.")
         await stream(
             _,
             mystic,
@@ -508,12 +495,10 @@ async def play_music(client, CallbackQuery, _):
             forceplay=ffplay,
         )
     except Exception as e:
-        traceback.print_exc()
         ex_type = type(e).__name__
         err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
         return await mystic.edit_text(err)
     return await mystic.delete()
-
 
 
 @app.on_callback_query(filters.regex("AnonymousAdmin") & ~BANNED_USERS)
