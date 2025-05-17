@@ -327,12 +327,17 @@ class YouTubeAPI:
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
                 )
-                stdout, stderr = await proc.communicate()
-                if stdout:
-                    downloaded_file = stdout.decode().split("\n")[0]
-                    direct = None
+                def generic_video_dl():
+                    with yt_dlp.YoutubeDL(proc) as mmk:
+                        return mmk.extract_info(link, download=True)
+                    
+                info = await loop.run_in_executor(None, generic_video_dl)
+                ext = info.get("ext", "")
+                filename = f"downloads/{info['id']}.{ext}"
+                if os.path.isfile(filename):
+                    return filename, True
                 else:
-                    return
+                    return None, False
         else:
             direct = True
             downloaded_file = await loop.run_in_executor(None, audio_dl)
