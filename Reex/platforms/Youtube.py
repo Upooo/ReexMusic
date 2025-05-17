@@ -11,20 +11,19 @@ from youtubesearchpython.__future__ import VideosSearch
 from Reex.utils.database import is_on_off
 from Reex.utils.formatters import time_to_seconds
 
-cook = "youtubecookies.txt"
 
-async def shell_cmd(cmd):
+cook = "youtube_cookies.txt"
+
+async def shell_cmd(cmd: str) -> str:
     proc = await asyncio.create_subprocess_shell(
         cmd,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
-    out, errorz = await proc.communicate()
-    if errorz:
-        if "unavailable videos are hidden" in (errorz.decode("utf-8")).lower():
-            return out.decode("utf-8")
-        else:
-            return errorz.decode("utf-8")
+    out, err = await proc.communicate()
+    err_decoded = err.decode("utf-8").lower()
+    if err and "unavailable videos are hidden" not in err_decoded:
+        return err.decode("utf-8")
     return out.decode("utf-8")
 
 
@@ -178,35 +177,26 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        ytdl_opts = {"quiet": True}
-        ydl = yt_dlp.YoutubeDL(ytdl_opts)
-        with ydl:
+        ydl_optssx = {"quiet": True}
+        with yt_dlp.YoutubeDL(ydl_optssx) as ydl:
             formats_available = []
             r = ydl.extract_info(link, download=False)
-            for format in r["formats"]:
-                try:
-                    str(format["format"])
-                except:
+            formats_available = []
+            for fmt in r.get("formats", []):
+                if "dash" in fmt.get("format", "").lower():
                     continue
-                if not "dash" in str(format["format"]).lower():
-                    try:
-                        format["format"]
-                        format["filesize"]
-                        format["format_id"]
-                        format["ext"]
-                        format["format_note"]
-                    except:
-                        continue
-                    formats_available.append(
-                        {
-                            "format": format["format"],
-                            "filesize": format["filesize"],
-                            "format_id": format["format_id"],
-                            "ext": format["ext"],
-                            "format_note": format["format_note"],
-                            "yturl": link,
-                        }
-                    )
+                if not all(key in fmt for key in ("format", "filesize", "format_id", "ext", "format_note")):
+                    continue
+                formats_available.append(
+                    {
+                        "format": fmt["format"],
+                        "filesize": fmt["filesize"],
+                        "format_id": fmt["format_id"],
+                        "ext": fmt["ext"],
+                        "format_note": fmt["format_note"],
+                        "yturl": link,
+                    }
+                )
         return formats_available, link
 
     async def slider(
@@ -249,8 +239,7 @@ class YouTubeAPI:
                 "geo_bypass": True,
                 "nocheckcertificate": True,
                 "quiet": True,
-                "cookiesfile": cook,
-                "no_warnings": True,
+                "cookiefile": cook,
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
             info = x.extract_info(link, False)
@@ -262,13 +251,12 @@ class YouTubeAPI:
 
         def video_dl():
             ydl_optssx = {
-                "format": "(bestvideo[height<=?720][width<=?1280][ext=mp4])+(bestaudio[ext=m4a])",
+                "format": f"{format_id}",
                 "outtmpl": "downloads/%(id)s.%(ext)s",
                 "geo_bypass": True,
-                "nocheckcertificate": True,
                 "quiet": True,
-                "cookiesfile": cook,
-                "no_warnings": True,
+                "nocheckcertificate": True,
+                "cookiefile": cook,
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
             info = x.extract_info(link, False)
@@ -287,7 +275,6 @@ class YouTubeAPI:
                 "geo_bypass": True,
                 "nocheckcertificate": True,
                 "quiet": True,
-                "cookiesfile": cook,
                 "no_warnings": True,
                 "prefer_ffmpeg": True,
                 "merge_output_format": "mp4",
@@ -303,7 +290,6 @@ class YouTubeAPI:
                 "geo_bypass": True,
                 "nocheckcertificate": True,
                 "quiet": True,
-                "cookiesfile": cook,
                 "no_warnings": True,
                 "prefer_ffmpeg": True,
                 "postprocessors": [
