@@ -230,12 +230,13 @@ class YouTubeAPI:
 
         def audio_dl():
             ydl_opts = {
-                "format": f"{format_id}",
+                "format": "bestaudio/best",
                 "outtmpl": "downloads/%(id)s.%(ext)s",
-                "quiet": True,
-                "nocheckcertificate": True,
                 "geo_bypass": True,
+                "nocheckcertificate": True,
+                "quiet": True,
                 "cookiefile": cook,
+                "postprocessors": [{"key": "FFmpegExtractAudio", "preferredcodec": "mp3"}],
             }
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(link, download=True)
@@ -264,7 +265,19 @@ class YouTubeAPI:
                     return None, False
 
             elif songvideo:
-                info = await loop.run_in_executor(None, video_dl)
+                ydl_opts = {
+                    "format": "best[height<=?720][width<=?1280]",
+                    "outtmpl": "downloads/%(id)s.%(ext)s",
+                    "quiet": True,
+                    "nocheckcertificate": True,
+                    "geo_bypass": True,
+                    "cookiefile": cook,
+                }
+
+                def generic_audio_dl():
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        return ydl.extract_info(link, download=True)
+                info = await loop.run_in_executor(None, generic_audio_dl)
                 ext = info.get("ext", "")
                 filename = f"downloads/{info['id']}.{ext}"
                 if os.path.isfile(filename):
