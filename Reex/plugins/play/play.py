@@ -1,3 +1,4 @@
+import os
 import random
 import string
 
@@ -436,32 +437,60 @@ async def play_commnd(
 @languageCB
 async def play_music(client, CallbackQuery, _):
     callback_data = CallbackQuery.data.strip()
-    callback_request = callback_data.split(None, 1)[1]
-    vidid, user_id, mode, cplay, fplay = callback_request.split("|")
+    print(f"[DEBUG] Callback data: {callback_data}")
+
+    try:
+        callback_request = callback_data.split(None, 1)[1]
+        vidid, user_id, mode, cplay, fplay = callback_request.split("|")
+        print(f"[DEBUG] vidid: {vidid}, user_id: {user_id}, mode: {mode}, cplay: {cplay}, fplay: {fplay}")
+    except Exception as e:
+        print(f"[ERROR] Gagal parsing callback data: {e}")
+        return
+
     if CallbackQuery.from_user.id != int(user_id):
         try:
             return await CallbackQuery.answer(_["playcb_1"], show_alert=True)
         except:
             return
+
     try:
         chat_id, channel = await get_channeplayCB(_, cplay, CallbackQuery)
-    except:
+        print(f"[DEBUG] chat_id: {chat_id}, channel: {channel}")
+    except Exception as e:
+        print(f"[ERROR] get_channeplayCB gagal: {e}")
         return
+
     user_name = CallbackQuery.from_user.first_name
+
     try:
         await CallbackQuery.message.delete()
         await CallbackQuery.answer()
     except:
         pass
+
     mystic = await CallbackQuery.message.reply_text(
         _["play_2"].format(channel) if channel else _["play_1"]
     )
+
     try:
         details, track_id = await YouTube.track(vidid, True)
-    except:
+        print(f"[DEBUG] YouTube details: {details}")
+        print(f"[DEBUG] track_id: {track_id}")
+    except Exception as e:
+        print(f"[ERROR] Gagal ambil track dari YouTube: {e}")
         return await mystic.edit_text(_["play_3"])
-    if details["duration_min"]:
+
+    # Debug cek apakah file download ada
+    file_path = f"./downloads/{track_id}.raw"  # atau .mp3 tergantung ekstensi yg digunakan
+    print(f"[DEBUG] Cek file: {file_path}")
+    if not os.path.exists(file_path):
+        print("❌ File tidak ditemukan.")
+    else:
+        print("✅ File ditemukan.")
+
+    if details.get("duration_min"):
         duration_sec = time_to_seconds(details["duration_min"])
+        print(f"[DEBUG] Durasi (detik): {duration_sec}")
         if duration_sec > config.DURATION_LIMIT:
             return await mystic.edit_text(
                 _["play_6"].format(config.DURATION_LIMIT_MIN, app.mention)
@@ -479,9 +508,12 @@ async def play_music(client, CallbackQuery, _):
             _["play_13"],
             reply_markup=InlineKeyboardMarkup(buttons),
         )
+
     video = True if mode == "v" else None
     ffplay = True if fplay == "f" else None
+
     try:
+        print("[DEBUG] Memanggil fungsi stream...")
         await stream(
             _,
             mystic,
@@ -494,10 +526,13 @@ async def play_music(client, CallbackQuery, _):
             streamtype="youtube",
             forceplay=ffplay,
         )
+        print("[DEBUG] Stream selesai.")
     except Exception as e:
         ex_type = type(e).__name__
         err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
+        print(f"[ERROR] Gagal stream: {e}")
         return await mystic.edit_text(err)
+
     return await mystic.delete()
 
 
