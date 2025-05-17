@@ -40,7 +40,7 @@ async def init():
 
     # ✅ Perbaikan utama di sini
     for all_module in ALL_MODULES:
-        importlib.import_module(f"AnonXMusic.plugins.{all_module}")
+        importlib.import_module(f"Reex.plugins.{all_module}")
     LOGGER("AryaaMusic.plugins").info("Successfully Imported Modules...")
 
     await userbot.start()
