@@ -230,13 +230,12 @@ class YouTubeAPI:
 
         def audio_dl():
             ydl_opts = {
-                "format": "bestaudio/best",
+                "format": f"{format_id}",
                 "outtmpl": "downloads/%(id)s.%(ext)s",
-                "geo_bypass": True,
-                "nocheckcertificate": True,
                 "quiet": True,
+                "nocheckcertificate": True,
+                "geo_bypass": True,
                 "cookiefile": cook,
-                "postprocessors": [{"key": "FFmpegExtractAudio", "preferredcodec": "mp3"}],
             }
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(link, download=True)

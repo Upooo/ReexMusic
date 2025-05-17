@@ -6,7 +6,7 @@ from pyrogram.types import InlineKeyboardMarkup, InputMediaPhoto, Message
 from pytgcalls.exceptions import NoActiveGroupCall
 
 import config
-from Reex import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app, logging
+from Reex import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app
 from Reex.core.call import Anony
 from Reex.utils import seconds_to_min, time_to_seconds
 from Reex.utils.channelplay import get_channeplayCB
@@ -24,10 +24,6 @@ from Reex.utils.logger import play_logs
 from Reex.utils.stream.stream import stream
 from config import BANNED_USERS, lyrical
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
 
 @app.on_message(
     filters.command(
@@ -438,67 +434,39 @@ async def play_commnd(
 
 @app.on_callback_query(filters.regex("MusicStream") & ~BANNED_USERS)
 @languageCB
-
 async def play_music(client, CallbackQuery, _):
-    logging.debug("Memulai play_music function.")
-
     callback_data = CallbackQuery.data.strip()
-    logging.debug(f"Callback Data: {callback_data}")
-
-    try:
-        callback_request = callback_data.split(None, 1)[1]
-        vidid, user_id, mode, cplay, fplay = callback_request.split("|")
-        logging.debug(f"Parsed Callback Data - vidid: {vidid}, user_id: {user_id}, mode: {mode}, cplay: {cplay}, fplay: {fplay}")
-    except Exception as e:
-        logging.error(f"Error parsing callback data: {e}")
-        return
-
+    callback_request = callback_data.split(None, 1)[1]
+    vidid, user_id, mode, cplay, fplay = callback_request.split("|")
     if CallbackQuery.from_user.id != int(user_id):
         try:
-            logging.warning("User ID tidak cocok.")
             return await CallbackQuery.answer(_["playcb_1"], show_alert=True)
-        except Exception as e:
-            logging.error(f"Gagal memberikan alert: {e}")
+        except:
             return
-
     try:
         chat_id, channel = await get_channeplayCB(_, cplay, CallbackQuery)
-        logging.debug(f"Channel ID: {chat_id}, Nama Channel: {channel}")
-    except Exception as e:
-        logging.error(f"Gagal mendapatkan channel: {e}")
+    except:
         return
-
     user_name = CallbackQuery.from_user.first_name
-
     try:
         await CallbackQuery.message.delete()
         await CallbackQuery.answer()
-    except Exception as e:
-        logging.warning(f"Gagal menghapus atau menjawab pesan callback: {e}")
-
+    except:
+        pass
     mystic = await CallbackQuery.message.reply_text(
         _["play_2"].format(channel) if channel else _["play_1"]
     )
-    logging.debug("Menampilkan pesan 'memutar musik...'")
-
     try:
         details, track_id = await YouTube.track(vidid, True)
-        logging.debug(f"Detail Lagu: {details}, Track ID: {track_id}")
-    except Exception as e:
-        logging.error(f"Gagal mendapatkan detail lagu dari YouTube: {e}")
+    except:
         return await mystic.edit_text(_["play_3"])
-
-    if details.get("duration_min"):
+    if details["duration_min"]:
         duration_sec = time_to_seconds(details["duration_min"])
-        logging.debug(f"Durasi lagu dalam detik: {duration_sec}")
-
         if duration_sec > config.DURATION_LIMIT:
-            logging.warning("Durasi lagu melebihi batas.")
             return await mystic.edit_text(
                 _["play_6"].format(config.DURATION_LIMIT_MIN, app.mention)
             )
     else:
-        logging.debug("Lagu adalah livestream.")
         buttons = livestream_markup(
             _,
             track_id,
@@ -511,12 +479,9 @@ async def play_music(client, CallbackQuery, _):
             _["play_13"],
             reply_markup=InlineKeyboardMarkup(buttons),
         )
-
     video = True if mode == "v" else None
     ffplay = True if fplay == "f" else None
-
     try:
-        logging.debug("Memanggil stream function.")
         await stream(
             _,
             mystic,
@@ -531,11 +496,8 @@ async def play_music(client, CallbackQuery, _):
         )
     except Exception as e:
         ex_type = type(e).__name__
-        logging.error(f"Error saat stream: {e}")
         err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
         return await mystic.edit_text(err)
-
-    logging.info("Selesai memutar musik.")
     return await mystic.delete()
 
 
