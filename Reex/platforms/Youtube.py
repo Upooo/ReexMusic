@@ -318,15 +318,14 @@ class YouTubeAPI:
                 direct = True
                 downloaded_file = await loop.run_in_executor(None, video_dl)
             else:
-                proc = await asyncio.create_subprocess_exec(
-                    "yt-dlp",
-                    "-g",
-                    "-f",
-                    "best[height<=?720][width<=?1280]",
-                    f"{link}",
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE,
-                )
+                proc = {
+                    "format": "best[height<=?720][width<=?1280]",
+                    "outtmpl": "downloads/%(id)s.%(ext)s",
+                    "quiet": True,
+                    "nocheckcertificate": True,
+                    "geo_bypass": True,
+                    "cookiefile": cook,
+                }
                 def generic_video_dl():
                     with yt_dlp.YoutubeDL(proc) as mmk:
                         return mmk.extract_info(link, download=True)
