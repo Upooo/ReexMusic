@@ -1,5 +1,3 @@
-import asyncio
-import os
 import random
 import string
 
@@ -8,22 +6,22 @@ from pyrogram.types import InlineKeyboardMarkup, InputMediaPhoto, Message
 from pytgcalls.exceptions import NoActiveGroupCall
 
 import config
-from Reex import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app
-from Reex.core.call import Anony
-from Reex.utils import seconds_to_min, time_to_seconds
-from Reex.utils.channelplay import get_channeplayCB
-from Reex.utils.decorators.language import languageCB
-from Reex.utils.decorators.play import PlayWrapper
-from Reex.utils.formatters import formats
-from Reex.utils.inline import (
+from AnonXMusic import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app
+from AnonXMusic.core.call import Anony
+from AnonXMusic.utils import seconds_to_min, time_to_seconds
+from AnonXMusic.utils.channelplay import get_channeplayCB
+from AnonXMusic.utils.decorators.language import languageCB
+from AnonXMusic.utils.decorators.play import PlayWrapper
+from AnonXMusic.utils.formatters import formats
+from AnonXMusic.utils.inline import (
     botplaylist_markup,
     livestream_markup,
     playlist_markup,
     slider_markup,
     track_markup,
 )
-from Reex.utils.logger import play_logs
-from Reex.utils.stream.stream import stream
+from AnonXMusic.utils.logger import play_logs
+from AnonXMusic.utils.stream.stream import stream
 from config import BANNED_USERS, lyrical
 
 
@@ -83,61 +81,35 @@ async def play_commnd(
                 _["play_6"].format(config.DURATION_LIMIT_MIN, app.mention)
             )
         file_path = await Telegram.get_filepath(audio=audio_telegram)
-
         if await Telegram.download(_, message, mystic, file_path):
-            print(f"[DEBUG] File path setelah download: {file_path}")
-
-            # Pastikan file ada dan memiliki ukuran
-            for i in range(10):
-                if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-                    print(f"[DEBUG] File ditemukan: {file_path}")
-                    break
-                await asyncio.sleep(0.5)
-            else:
-                return await mystic.edit_text(f"❌ File tidak ditemukan setelah download:\n`{file_path}`")
+            message_link = await Telegram.get_link(message)
+            file_name = await Telegram.get_filename(audio_telegram, audio=True)
+            dur = await Telegram.get_duration(audio_telegram, file_path)
+            details = {
+                "title": file_name,
+                "link": message_link,
+                "path": file_path,
+                "dur": dur,
+            }
 
             try:
-                message_link = await Telegram.get_link(message)
-                file_name = await Telegram.get_filename(audio_telegram, audio=True)
-
-                try:
-                    dur = await Telegram.get_duration(audio_telegram, file_path)
-                except FileNotFoundError:
-                    return await mystic.edit_text(f"❌ File tidak ditemukan saat mencoba mengambil durasi:\n`{file_path}`")
-                except Exception as e:
-                    return await mystic.edit_text(f"❌ Gagal membaca durasi file: {e}")
-
-                details = {
-                    "title": file_name,
-                    "link": message_link,
-                    "path": file_path,
-                    "dur": dur,
-                }
-
-                try:
-                    await stream(
-                        _,
-                        mystic,
-                        user_id,
-                        details,
-                        chat_id,
-                        user_name,
-                        message.chat.id,
-                        streamtype="telegram",
-                        forceplay=fplay,
-                    )
-                except Exception as e:
-                    ex_type = type(e).__name__
-                    err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
-                    return await mystic.edit_text(err)
-
-                return await mystic.delete()
-
+                await stream(
+                    _,
+                    mystic,
+                    user_id,
+                    details,
+                    chat_id,
+                    user_name,
+                    message.chat.id,
+                    streamtype="telegram",
+                    forceplay=fplay,
+                )
             except Exception as e:
-                return await mystic.edit_text(f"❌ Terjadi kesalahan saat memproses file: {e}")
-
-        else:
-            return await mystic.edit_text("❌ Download gagal. File tidak bisa disimpan.")
+                ex_type = type(e).__name__
+                err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
+                return await mystic.edit_text(err)
+            return await mystic.delete()
+        return
     elif video_telegram:
         if message.reply_to_message.document:
             try:
