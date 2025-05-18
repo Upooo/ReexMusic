@@ -27,3 +27,18 @@ async def ping_com(client, message: Message, _):
         reply_markup=supp_markup(_),
     )
 
+@app.on_message(filters.command("id") & ~BANNED_USERS)
+async def cek_id(client, message):
+    user = message.reply_to_message.from_user if message.reply_to_message else message.from_user
+
+    user_id = user.id
+    username = f"@{user.username}"
+    first_name = user.first_name
+
+    reply_text = (
+        f"✨ Info ID:\n\n"
+        f"• ID: {user_id}\n"
+        f"• Username: {username}\n"
+        f"• Nama: {first_name}"
+    )
+    await message.reply_text(reply_text)
