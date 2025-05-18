@@ -1,3 +1,4 @@
+import random
 from pyrogram import filters
 
 from Reex import YouTube, app
@@ -30,7 +31,7 @@ async def play_live_stream(client, CallbackQuery, _):
     except:
         pass
     mystic = await CallbackQuery.message.reply_text(
-        _["play_2"].format(channel) if channel else _["play_1"]
+        _["play_2"].format(channel) if channel else random.choice(_["play_1"])
     )
     try:
         details, track_id = await YouTube.track(vidid, True)
