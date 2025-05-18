@@ -8,7 +8,7 @@ xXx = {}
 oOo = {}
 
 
-@app.on_message(filters.command("btnchannel") & filters.private & ~BANNED_USERS)
+@app.on_message(filters.command(["btnchannel", "btnpost", "chbtn"]) & filters.private & ~BANNED_USERS)
 async def send_command(client, message: Message):
     user_id = message.from_user.id
     oOo[user_id] = "wait_channel"

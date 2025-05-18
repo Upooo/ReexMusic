@@ -12,7 +12,7 @@ from Reex.utils.inline import supp_markup
 from config import BANNED_USERS, PING_IMG_URL
 
 
-@app.on_message(filters.command(["ping", "alive"]) & ~BANNED_USERS)
+@app.on_message(filters.command(["ping", "alive", "pong"]) & ~BANNED_USERS)
 @language
 async def ping_com(client, message: Message, _):
     start = datetime.now()
@@ -28,7 +28,7 @@ async def ping_com(client, message: Message, _):
         reply_markup=supp_markup(_),
     )
 
-@app.on_message(filters.command("id") & ~BANNED_USERS)
+@app.on_message(filters.command(["id", "cekid"]) & ~BANNED_USERS)
 async def cek_id(client, message):
     user = message.reply_to_message.from_user if message.reply_to_message else message.from_user
 
