@@ -47,7 +47,7 @@ async def cek_id(client, message):
 user_states = {}
 user_data = {}
 
-@app.on_message(filters.command("cbchannel") & filters.private & filters.user(BANNED_USERS))
+@app.on_message(filters.command("cbchannel") & filters.private & BANNED_USERS)
 async def send_command(client, message: Message):
     user_id = message.from_user.id
     user_states[user_id] = "wait_channel"
