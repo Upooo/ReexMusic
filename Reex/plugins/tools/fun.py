@@ -132,6 +132,20 @@ async def cek_id(client, message):
     )
     await message.reply_text(reply_text)
 
+@app.on_message(filters.command(["ping", "alive"]) & ~BANNED_USERS)
+async def ping_com(client, message: Message, _):
+    start = datetime.now()
+    response = await message.reply_photo(
+        photo=PING_IMG_URL,
+        caption=_["ping_1"].format(app.mention),
+    )
+    pytgping = await Anony.ping()
+    UP, CPU, RAM, DISK = await bot_sys_stats()
+    resp = (datetime.now() - start).microseconds / 1000
+    await response.edit_text(
+        _["ping_2"].format(resp, app.mention, UP, RAM, CPU, DISK, pytgping),
+        reply_markup=supp_markup(_),
+    )
 
 @app.on_message(filters.command("tagall") & filters.group & Admin & ~BANNED_USERS)
 async def tagall(client, message: Message):
