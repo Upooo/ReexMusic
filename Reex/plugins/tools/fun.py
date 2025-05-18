@@ -8,7 +8,7 @@ from pyrogram import filters
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import Message
 from pyrogram.errors import FloodWait, UserNotParticipant
-from telegram import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from pyrogram.enums import ParseMode
 
 
