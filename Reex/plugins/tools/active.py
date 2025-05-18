@@ -11,7 +11,6 @@ from Reex.utils.database import (
     remove_active_video_chat,
 )
 
-
 @app.on_message(filters.command(["activevc", "activevoice"]) & SUDOERS)
 async def activevc(_, message: Message):
     mystic = await message.reply_text("» ɢᴇᴛᴛɪɴɢ ᴀᴄᴛɪᴠᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛs ʟɪsᴛ...")
@@ -74,3 +73,4 @@ async def activevi_(_, message: Message):
             f"<b>» ʟɪsᴛ ᴏғ ᴄᴜʀʀᴇɴᴛʟʏ ᴀᴄᴛɪᴠᴇ ᴠɪᴅᴇᴏ ᴄʜᴀᴛs :</b>\n\n{text}",
             disable_web_page_preview=True,
         )
+

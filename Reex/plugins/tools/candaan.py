@@ -354,3 +354,64 @@ async def send_final_message(client, user_id, callback):
     user_states.pop(user_id, None)
     user_data.pop(user_id, None)
 
+@app.on_message(filters.command("tagall") & filters.group & Admin & ~BANNED_USERS)
+async def tagall(client, message: Message):
+    await message.delete()
+    chat_id = message.chat.id
+    args = get_arg(message)
+    if not args:
+        args = "Halooo!"
+    spam_chats.append(chat_id)
+    usrnum = 0
+    usrtxt = ""
+    m = client.get_chat_members(chat_id)
+    async for usr in m:
+        if not chat_id in spam_chats:
+            break
+        usrnum += 1
+        usrtxt += f"<a href='tg://user?id={usr.user.id}'>{random.choice(emoji)}</a> <a href='tg://user?id={usr.user.id}'><b>{usr.user.first_name}</b></a>\n"
+        if usrnum == 5:
+            txt = f"<b>{args}</b>\n\n{usrtxt}"
+            try:
+                await client.send_message(chat_id, txt)
+            except FloodWait as e:
+                await sleep(e.value)
+                await client.send_message(chat_id, txt)
+
+            await sleep(2)
+            usrnum = 0
+            usrtxt = ""
+    try:
+        await client.send_message(chat_id, "<b>ᴘʀᴏꜱᴇꜱ ᴛᴀɢ ᴀʟʟ ᴛᴇʟᴀʜ ꜱᴇʟᴇꜱᴀɪ.</b>")
+        spam_chats.remove(chat_id)
+    except:
+        pass
+
+@app.on_message(filters.command("stoptag") & filters.group & Admin & ~BANNED_USERS)
+async def untag(client, message: Message):
+    if not message.chat.id in spam_chats:
+        return await message.reply("<b>ꜱᴇᴘᴇʀᴛɪɴʏᴀ ᴛɪᴅᴀᴋ ᴀᴅᴀ ᴛᴀɢ ᴀʟʟ ʏᴀɴɢ ꜱᴇᴅᴀɴɢ ʙᴇʀʟᴀɴɢꜱᴜɴɢ.</b>")
+    else:
+        try:
+            spam_chats.remove(message.chat.id)
+        except:
+            pass
+        return await message.reply("<b>ᴘʀᴏꜱᴇꜱ ᴛᴀɢ ᴀʟʟ ᴅɪ ʜᴇɴᴛɪᴋᴀɴ.</b>")
+        
+@app.on_message(filters.command("cekkodam") & filters.group & Admin & ~BANNED_USERS)
+async def cek_kodam_command(client, message):
+    OWNER = 7288784920
+    if not message.reply_to_message:
+        return await message.reply_text("Kamu harus reply seseorang yang ingin saya cek kodam-nya.")
+
+    replied_user = message.reply_to_message.from_user
+    replied_user_name = replied_user.first_name
+    replied_user_id = replied_user.id
+
+    if replied_user_id == OWNER:
+        reply_text = "Gabisa di cek, terlalu ganteng."
+    else:
+        response = random.choice(nama_kodam)
+        reply_text = f"Kodam {replied_user_name}? {response}"
+
+    await message.reply_text(reply_text)
