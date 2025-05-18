@@ -138,8 +138,7 @@ async def untag(client, message: Message):
         
 @app.on_message(filters.command("cekkodam") & filters.group & Admin & ~BANNED_USERS)
 async def cek_kodam_command(client, message):
-    OWNER_ID = 7068357086
-
+    OWNER = 7288784920
     if not message.reply_to_message:
         return await message.reply_text("Kamu harus reply seseorang yang ingin saya cek kodam-nya.")
 
@@ -147,7 +146,7 @@ async def cek_kodam_command(client, message):
     replied_user_name = replied_user.first_name
     replied_user_id = replied_user.id
 
-    if replied_user_id == OWNER_ID:
+    if replied_user_id == OWNER:
         reply_text = "Gabisa di cek, terlalu ganteng."
     else:
         response = random.choice(nama_kodam)
