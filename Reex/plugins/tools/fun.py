@@ -4,6 +4,7 @@ from asyncio import sleep
 import asyncio
 
 from Reex import app
+from config import OWNER_ID
 from pyrogram import filters
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import Message
@@ -162,28 +163,31 @@ async def untag(client, message: Message):
         
 @app.on_message(filters.command("cekkodam") & filters.group & Admin & ~BANNED_USERS)
 def cek_kodam_command(client, message):
-    OWNER = [7070276015, 6293684359, 7460160870]
-    replied_user = message.reply_to_message.from_user.first_name if message.reply_to_message else None
-    replied_user_id = message.reply_to_message.from_user.id
-    if replied_user_id == OWNER:
-        response = random.choice(nama_kodam)
-        reply_text = f"Kodam {replied_user}, adalah:\nALBERT EINSTEIN\nDia adalah orang yang sangat pintar dan sangat sangat tidak terkalahkan."
-        message.reply_text(reply_text)
-    elif replied_user:
-        response = random.choice(nama_kodam)
-        reply_text = f"Kodam {replied_user} adalah: {response}"
-        message.reply_text(reply_text)
+    if not message.reply_to_message:
+        return message.reply_text("Kamu harus reply seseorang yang ingin saya cek kodam-nya.")
+
+    replied_user = message.reply_to_message.from_user
+    replied_user_name = replied_user.first_name
+    replied_user_id = replied_user.id
+
+    if replied_user_id == OWNER_ID:
+        reply_text = (
+            f"Kodam {replied_user_name}, adalah:\n"
+            f"ALBERT EINSTEIN\nDia adalah orang yang sangat pintar dan sangat sangat tidak terkalahkan."
+        )
     else:
-        message.reply_text("Kamu harus mereply sesorang yang ingin saya cek kodam nya.")
-        
-        
-@app.on_message(filters.command("btnpost") & filters.private)
+        response = random.choice(nama_kodam)
+        reply_text = f"Kodam {replied_user_name} adalah:\n{response}"
+
+    message.reply_text(reply_text)
+   
+@app.on_message(filters.command("btnpost") & filters.private & ~BANNED_USERS)
 async def send_command(client, message: Message):
     user_id = message.from_user.id
     user_states[user_id] = "wait_channel"
     user_data[user_id] = {"buttons": []}
     await message.reply(
-        "💭 Mau post di channel mana? Kirim username atau ID channel-nya.\n\n"
+        "💭 Mau post di channel mana? pastiin bot ini udah jadi admin ya di channel nya. Kirim username atau ID channel nya sini.\n\n"
         "📝 Contoh: @usernamechannel"
     )
 
@@ -376,21 +380,18 @@ async def send_final_message(client, user_id, callback):
     user_states.pop(user_id, None)
     user_data.pop(user_id, None)
 
-@app.on_message(filters.command("id"))
+@app.on_message(filters.command("id") & ~BANNED_USERS)
 async def cek_id(client, message):
-    if message.reply_to_message:
-        user = message.reply_to_message.from_user
-    else:
-        user = message.from_user
+    user = message.reply_to_message.from_user if message.reply_to_message else message.from_user
 
     user_id = user.id
-    username = user.username or "-"
+    username = f"@{user.username}" if user.username else "-"
     first_name = user.first_name or "-"
 
     reply_text = (
         f"✨ Info ID:\n"
         f"• ID: `{user_id}`\n"
-        f"• Username: @{username}\n"
+        f"• Username: {username}\n"
         f"• Nama: {first_name}"
     )
     await message.reply_text(reply_text)
