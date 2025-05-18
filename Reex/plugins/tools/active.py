@@ -1,6 +1,5 @@
 from pyrogram import filters
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from pyrogram.enums import ParseMode
+from pyrogram.types import Message
 from unidecode import unidecode
 
 from Reex import app
@@ -11,9 +10,6 @@ from Reex.utils.database import (
     remove_active_chat,
     remove_active_video_chat,
 )
-
-user_states = {}
-user_data = {}
 
 @app.on_message(filters.command(["activevc", "activevoice"]) & SUDOERS)
 async def activevc(_, message: Message):
