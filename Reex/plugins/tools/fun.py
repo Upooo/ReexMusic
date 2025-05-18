@@ -4,7 +4,6 @@ from asyncio import sleep
 import asyncio
 
 from Reex import app
-from config import OWNER_ID
 from pyrogram import filters
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import Message
@@ -25,74 +24,74 @@ user_states = {}
 user_data = {}
 
 nama_kodam = [
-    "MACAN MENCRET\nDia sebenarnya adalah orang yang tangguh, namun dia menjadi lemah karena suka mencret dan berak di celana.",
-    "SINGA NGANTUK\nPunya semangat juang, tapi suka ketiduran pas lagi rapat penting.",
-    "GAJAH BAPER\nSuka baper nggak jelas, kadang nangis sendiri di pojokan.",
-    "KUCING NGOMEL\nSuka ngeluh terus tapi gak pernah ngapa-ngapain.",
-    "ULAR NGACIR\nCepat banget gerak, tapi sering salah jalan dan nyasar-nyasar.",
-    "BURUNG GALAU\nSuka bingung milih makanan, ujung-ujungnya makan mie terus.",
-    "KELELAWAR MAGER\nMager parah, paling suka tidur siang sambil ngiler.",
-    "BEGAL MALAS\nSuka niat banget mau jalan, tapi ujungnya diem aja di rumah.",
-    "KANCIL BODOH\nPinter pura-pura, tapi sering ketauan nggak ngerti apa-apa.",
-    "RATU NGANTUK\nRaja tidur siang, bahkan pas lagi meeting online.",
-    "KURA-KURA SOK CEPAT\nPake motor tapi jalan lambat, bikin macet di jalan.",
-    "BURUNG GAK JELAS\nNgomong gak nyambung, tapi suka bikin orang ngakak.",
-    "GADIS GALAU\nSuka mikir berat soal masalah yang gak penting-penting amat.",
-    "HARIMAU NGGAK GIGI\nSok garang tapi takut kucing tetangga.",
-    "BUAYA PENGHIBUR\nKalem tapi suka nyeleneh dan bikin suasana jadi heboh.",
-    "KUCING MANJA\nSuka minta perhatian tapi kalau dikasih malah cuek.",
-    "BABI NGAMUK\nMudah marah tapi cepet lupa, besok udah baikan lagi.",
-    "JERAPAH SOK PANDAI\nSok tinggi hati tapi gampang jatuh dari sepeda.",
-    "KAMBING REMPOK\nSuka ngumpet pas ada kerjaan.",
-    "ULAR PELIT\nSuka pinjam barang tapi gak pernah balikin.",
-    "TIKUS SOK CEPAT\nLarinya kenceng tapi suka kepleset batu.",
-    "KUPU-KUPU GALAU\nGanti-ganti gaya tiap hari, tapi tetep bingung mau jadi apa.",
-    "GAGAK CEREWET\nNgomong terus tapi gak pernah jelas.",
-    "BADAK PENDIAM\nKalem banget sampai dikira nggak ada nyawa.",
-    "TARANTULA SOK JAGO\nSuka pamer tapi kalau dideketin malah lari.",
-    "BURUNG HANTU MALAS\nSuka nongkrong tengah malam tapi males kerja.",
-    "RUSA KEPENTOK\nSok keren tapi sering nabrak pintu."
-    "BUAYA PELIT\nSuka nitip tapi gak pernah bayar, bikin temen sebel banget.",
-    "HARIMAU NGACO\nSuka ngomong random gak jelas tapi bikin ketawa.",
-    "KAMBING KEPENTOK\nSerius tapi suka kepleset kata-kata, bikin suasana lucu.",
-    "KERBAU SANTUY\nPendiam tapi santai, sering jalan sambil main HP sampe nabrak tiang.",
-    "TIKUS GALAU\nBingung terus soal hidup, tapi males ngapa-ngapain.",
-    "RUSA LAPER\nKalau kelaperan langsung berubah jadi monster rebut makanan.",
-    "ANJING NGOBROL\nGak bisa diem, ngomong terus walau kadang gak nyambung.",
-    "BUAYA SOK TEGAS\nSuka marah-marah tapi ujungnya minta maaf duluan.",
-    "BURUNG NGAYAL\nBanyak ide tapi gak pernah jadi-jadi, cuma wacana doang.",
-    "KURA-KURA LAMBAT\nGerak pelan banget, tapi selalu sampai juga walau telat.",
-    "LABA-LABA PINTAR\nSok pinter tapi suka salah ngomong, bikin bingung orang lain.",
-    "JANGKRIK NGACO\nSuka ngelantur gak jelas, tapi bikin ketawa aja.",
-    "SINGA JAGOAN\nSok kuat tapi kalau disuruh bantu malah ngilang entah kemana."
-    "KETOMBE SEMUT\nDia adalah orang yang paling malas untuk mandi bahkan orang ini bisa mandi hanya satu kali dalam seminggu.",
-    "DADAR GULUNG\nOrang ini suka makan tetapi hanya makan telur sehingga banyak bisul dan bekas bisul di pantat nya.",
-    "CICAK ARAB\nKodam dia berasal dari arab dan orang ini adalah keturunan arab(arab gokil)",
-    "BADARAWUHI\nOrangnya suka tantrum kalo lagi berantem. ", 
-    "TUYUL BUSUNG LAPAR\nBadannya kurus tapi suka makan banyak. ",
-    "GENDERUWO TIKTOK\nOrangnya gede tinggi lebat berbulu dan suka geal geol. ",
-    "SETAN PAYUNG BOCOR\nOrang yang memiliki khodam ini akan mempunya skill ghibah kemanapun ia pergi. ", 
-    "KUNTILANAK SELFIE\nOrang yang punya khodam ini bakalan sering ngerasa cantik dijam 3 pagi dan selfie terus sampe memori hpnya penuh. ", 
-    "BATUBATA\nOrangnya bakalan susah dinasehatin karena sifatnya sekeras batu. ",
-    "REMAHAN RENGGINANG\nOrang yang punya khodam ini sering ketawa mulu sekrispin remahan rengginang. ",
-    "JIN PENUNGGU OS\nKhodam ini membuat pemiliknya betah terus terusan tidur di os seharian. ",
-    "MANUSIA HARIMAU\nOrang yg punya khodam ini sering bikin pemiliknya mengeluarkan suara Rawr di OS. ",
-    "KOSONG\nKhodam kamu kosong kaya otak kamu, silahkan isi di pom bensin terdekat. ",
-    "RAWARONTEK\nOrang yang punya khodam ini kebal senjata tajam. ",
-    "LC KARAOKE\nOrang yang punya khodam ini otomatis dapat memikat lawan jenis. ",
-    "AWEWE GOMBEL\nOrang yamg punya khodam ini biasanya tante tante yang suka  nyulik laki laki di tele buat move ke WA.",
-    "AYAM HALU\nOrang yang punya khodam ini sering Halu tiap malem ,berharap Biasnya bisa jadi suami. ", 
-    "KAMBING CONGE\nOrang yang punya khodam ini adalah orang yang suka diem di OS padahal udah sering disapa. ",
-    "KUNTILANAK STAR SYNDROME\nOrang yang punya khodam ini adalah orang yang dichat sekarang balesnya lebaran tahun depan. ",
-    "BEBEK SUMBING\nOrangnya suka ngomong ekbew di OS. ",
-    "TUYUL KULIAH ONLINE\nCiri ciri orang yang punya khodam ini adalah mempunyai kantung mata karena keseringan begadang ngerjain tugas. ",
-    "VAMPIRE CABUL\nOrang yang punya khodam ini sering mengincar Chindo di Os. ",
-    "SEMAR MESEM\nOrang yang punya khodam ini bakalan memikat orang dengan senyuman mautnya. ",
-    "GAGANG TELEPON\nOrang yang punya khodam ini gabakalan bisa hidup tanpa sleepcall dipagi siang dan malam. ",
-    "SUMANTO\nOrang yang punya khodam Sumanto adalah orang yang rela makan temennya demi suatu hal. ",
-    "MEMEK TERBANG\nYang punya kodam begini biasanya suka ngintip rok ibu ibu yang lagi belanja sayur",
-    "TELE STRES\nOrang kalo udah punya kodam beginian mah susah, ga buka tele semenit aja berasa kaya orang meninggal",
-    "DONOR PEJU\nGausah di tanya lagi kalo kodam nya begini mah. RAJINNNN COLIIII!!"
+    "MACAN MENCRET\n\nDia sebenarnya adalah orang yang tangguh, namun dia menjadi lemah karena suka mencret dan berak di celana.",
+    "SINGA NGANTUK\n\nPunya semangat juang, tapi suka ketiduran pas lagi rapat penting.",
+    "GAJAH BAPER\n\nSuka baper nggak jelas, kadang nangis sendiri di pojokan.",
+    "KUCING NGOMEL\n\nSuka ngeluh terus tapi gak pernah ngapa-ngapain.",
+    "ULAR NGACIR\n\nCepat banget gerak, tapi sering salah jalan dan nyasar-nyasar.",
+    "BURUNG GALAU\n\nSuka bingung milih makanan, ujung-ujungnya makan mie terus.",
+    "KELELAWAR MAGER\n\nMager parah, paling suka tidur siang sambil ngiler.",
+    "BEGAL MALAS\n\nSuka niat banget mau jalan, tapi ujungnya diem aja di rumah.",
+    "KANCIL BODOH\n\nPinter pura-pura, tapi sering ketauan nggak ngerti apa-apa.",
+    "RATU NGANTUK\n\nRaja tidur siang, bahkan pas lagi meeting online.",
+    "KURA-KURA SOK CEPAT\n\nPake motor tapi jalan lambat, bikin macet di jalan.",
+    "BURUNG GAK JELAS\n\nNgomong gak nyambung, tapi suka bikin orang ngakak.",
+    "GADIS GALAU\n\nSuka mikir berat soal masalah yang gak penting-penting amat.",
+    "HARIMAU NGGAK GIGI\n\nSok garang tapi takut kucing tetangga.",
+    "BUAYA PENGHIBUR\n\nKalem tapi suka nyeleneh dan bikin suasana jadi heboh.",
+    "KUCING MANJA\n\nSuka minta perhatian tapi kalau dikasih malah cuek.",
+    "BABI NGAMUK\n\nMudah marah tapi cepet lupa, besok udah baikan lagi.",
+    "JERAPAH SOK PANDAI\n\nSok tinggi hati tapi gampang jatuh dari sepeda.",
+    "KAMBING REMPOK\n\nSuka ngumpet pas ada kerjaan.",
+    "ULAR PELIT\n\nSuka pinjam barang tapi gak pernah balikin.",
+    "TIKUS SOK CEPAT\n\nLarinya kenceng tapi suka kepleset batu.",
+    "KUPU-KUPU GALAU\n\nGanti-ganti gaya tiap hari, tapi tetep bingung mau jadi apa.",
+    "GAGAK CEREWET\n\nNgomong terus tapi gak pernah jelas.",
+    "BADAK PENDIAM\n\nKalem banget sampai dikira nggak ada nyawa.",
+    "TARANTULA SOK JAGO\n\nSuka pamer tapi kalau dideketin malah lari.",
+    "BURUNG HANTU MALAS\n\nSuka nongkrong tengah malam tapi males kerja.",
+    "RUSA KEPENTOK\n\nSok keren tapi sering nabrak pintu.",
+    "BUAYA PELIT\n\nSuka nitip tapi gak pernah bayar, bikin temen sebel banget.",
+    "HARIMAU NGACO\n\nSuka ngomong random gak jelas tapi bikin ketawa.",
+    "KAMBING KEPENTOK\n\nSerius tapi suka kepleset kata-kata, bikin suasana lucu.",
+    "KERBAU SANTUY\n\nPendiam tapi santai, sering jalan sambil main HP sampe nabrak tiang.",
+    "TIKUS GALAU\n\nBingung terus soal hidup, tapi males ngapa-ngapain.",
+    "RUSA LAPER\n\nKalau kelaperan langsung berubah jadi monster rebut makanan.",
+    "ANJING NGOBROL\n\nGak bisa diem, ngomong terus walau kadang gak nyambung.",
+    "BUAYA SOK TEGAS\n\nSuka marah-marah tapi ujungnya minta maaf duluan.",
+    "BURUNG NGAYAL\n\nBanyak ide tapi gak pernah jadi-jadi, cuma wacana doang.",
+    "KURA-KURA LAMBAT\n\nGerak pelan banget, tapi selalu sampai juga walau telat.",
+    "LABA-LABA PINTAR\n\nSok pinter tapi suka salah ngomong, bikin bingung orang lain.",
+    "JANGKRIK NGACO\n\nSuka ngelantur gak jelas, tapi bikin ketawa aja.",
+    "SINGA JAGOAN\n\nSok kuat tapi kalau disuruh bantu malah ngilang entah kemana.",
+    "KETOMBE SEMUT\n\nDia adalah orang yang paling malas untuk mandi bahkan orang ini bisa mandi hanya satu kali dalam seminggu.",
+    "DADAR GULUNG\n\nOrang ini suka makan tetapi hanya makan telur sehingga banyak bisul dan bekas bisul di pantat nya.",
+    "CICAK ARAB\n\nKodam dia berasal dari arab dan orang ini adalah keturunan arab (arab gokil).",
+    "BADARAWUHI\n\nOrangnya suka tantrum kalo lagi berantem.",
+    "TUYUL BUSUNG LAPAR\n\nBadannya kurus tapi suka makan banyak.",
+    "GENDERUWO TIKTOK\n\nOrangnya gede tinggi lebat berbulu dan suka geal-geol.",
+    "SETAN PAYUNG BOCOR\n\nOrang yang memiliki khodam ini akan mempunya skill ghibah kemanapun ia pergi.",
+    "KUNTILANAK SELFIE\n\nOrang yang punya khodam ini bakalan sering ngerasa cantik dijam 3 pagi dan selfie terus sampe memori hpnya penuh.",
+    "BATUBATA\n\nOrangnya bakalan susah dinasehatin karena sifatnya sekeras batu."
+    "REMAHAN RENGGINANG\n\nOrang yang punya khodam ini sering ketawa mulu sekrispin remahan rengginang. ",
+    "JIN PENUNGGU OS\n\nKhodam ini membuat pemiliknya betah terus terusan tidur di os seharian. ",
+    "MANUSIA HARIMAU\n\nOrang yg punya khodam ini sering bikin pemiliknya mengeluarkan suara Rawr di OS. ",
+    "KOSONG\n\nKhodam kamu kosong kaya otak kamu, silahkan isi di pom bensin terdekat. ",
+    "RAWARONTEK\n\nOrang yang punya khodam ini kebal senjata tajam. ",
+    "LC KARAOKE\n\nOrang yang punya khodam ini otomatis dapat memikat lawan jenis. ",
+    "AWEWE GOMBEL\n\nOrang yamg punya khodam ini biasanya tante tante yang suka  nyulik laki laki di tele buat move ke WA.",
+    "AYAM HALU\n\nOrang yang punya khodam ini sering Halu tiap malem ,berharap Biasnya bisa jadi suami. ", 
+    "KAMBING CONGE\n\nOrang yang punya khodam ini adalah orang yang suka diem di OS padahal udah sering disapa. ",
+    "KUNTILANAK STAR SYNDROME\n\nOrang yang punya khodam ini adalah orang yang dichat sekarang balesnya lebaran tahun depan. ",
+    "BEBEK SUMBING\n\nOrangnya suka ngomong ekbew di OS. ",
+    "TUYUL KULIAH ONLINE\n\nCiri ciri orang yang punya khodam ini adalah mempunyai kantung mata karena keseringan begadang ngerjain tugas. ",
+    "VAMPIRE CABUL\n\nOrang yang punya khodam ini sering mengincar Chindo di Os. ",
+    "SEMAR MESEM\n\nOrang yang punya khodam ini bakalan memikat orang dengan senyuman mautnya. ",
+    "GAGANG TELEPON\n\nOrang yang punya khodam ini gabakalan bisa hidup tanpa sleepcall dipagi siang dan malam. ",
+    "SUMANTO\n\nOrang yang punya khodam Sumanto adalah orang yang rela makan temennya demi suatu hal. ",
+    "MEMEK TERBANG\n\nYang punya kodam begini biasanya suka ngintip rok ibu ibu yang lagi belanja sayur",
+    "TELE STRES\n\nOrang kalo udah punya kodam beginian mah susah, ga buka tele semenit aja berasa kaya orang meninggal",
+    "DONOR PEJU\n\nGausah di tanya lagi kalo kodam nya begini mah. RAJINNNN COLIIII!!"
 ]
 
 def get_arg(message: Message):
@@ -116,6 +115,23 @@ async def isAdmin(filter, client, update):
     return member.status in [STATUS.OWNER, STATUS.ADMINISTRATOR]
 
 Admin = filters.create(isAdmin)
+
+@app.on_message(filters.command("getid") & ~BANNED_USERS)
+async def cek_id(client, message):
+    user = message.reply_to_message.from_user if message.reply_to_message else message.from_user
+
+    user_id = user.id
+    username = f"@{user.username}"
+    first_name = user.first_name
+
+    reply_text = (
+        f"✨ Info ID:\n"
+        f"• ID: `{user_id}`\n"
+        f"• Username: {username}\n"
+        f"• Nama: {first_name}"
+    )
+    await message.reply_text(reply_text)
+
 
 @app.on_message(filters.command("tagall") & filters.group & Admin & ~BANNED_USERS)
 async def tagall(client, message: Message):
@@ -163,6 +179,8 @@ async def untag(client, message: Message):
         
 @app.on_message(filters.command("cekkodam") & filters.group & Admin & ~BANNED_USERS)
 async def cek_kodam_command(client, message):
+    OWNER_ID = 7068357086
+
     if not message.reply_to_message:
         return await message.reply_text("Kamu harus reply seseorang yang ingin saya cek kodam-nya.")
 
@@ -171,15 +189,13 @@ async def cek_kodam_command(client, message):
     replied_user_id = replied_user.id
 
     if replied_user_id == OWNER_ID:
-        reply_text = (
-            f"Kodam {replied_user_name}, adalah:\n"
-            f"ALBERT EINSTEIN\nDia adalah orang yang sangat pintar dan sangat sangat tidak terkalahkan."
-        )
+        reply_text = "Gabisa di cek, terlalu ganteng."
     else:
         response = random.choice(nama_kodam)
-        reply_text = f"Kodam {replied_user_name} adalah:\n{response}"
+        reply_text = f"Kodam {replied_user_name}? {response}"
 
     await message.reply_text(reply_text)
+
    
 @app.on_message(filters.command("btnpost") & filters.private & ~BANNED_USERS)
 async def send_command(client, message: Message):
@@ -379,19 +395,3 @@ async def send_final_message(client, user_id, callback):
 
     user_states.pop(user_id, None)
     user_data.pop(user_id, None)
-
-@app.on_message(filters.command("id") & ~BANNED_USERS)
-async def cek_id(client, message):
-    user = message.reply_to_message.from_user if message.reply_to_message else message.from_user
-
-    user_id = user.id
-    username = f"@{user.username}" if user.username else "-"
-    first_name = user.first_name or "-"
-
-    reply_text = (
-        f"✨ Info ID:\n"
-        f"• ID: `{user_id}`\n"
-        f"• Username: {username}\n"
-        f"• Nama: {first_name}"
-    )
-    await message.reply_text(reply_text)
