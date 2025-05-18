@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from pyrogram import filters
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from pyrogram.enums import ParseMode
+from pyrogram.types import Message
 
 from Reex import app
 from Reex.core.call import Anony
@@ -27,4 +26,3 @@ async def ping_com(client, message: Message, _):
         _["ping_2"].format(resp, app.mention, UP, RAM, CPU, DISK, pytgping),
         reply_markup=supp_markup(_),
     )
-    
