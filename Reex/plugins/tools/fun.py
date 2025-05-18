@@ -116,7 +116,7 @@ async def isAdmin(filter, client, update):
 
 Admin = filters.create(isAdmin)
 
-@app.on_message(filters.command("getid") & ~BANNED_USERS)
+@app.on_message(filters.command("id") & ~BANNED_USERS)
 async def cek_id(client, message):
     user = message.reply_to_message.from_user if message.reply_to_message else message.from_user
 
@@ -125,8 +125,8 @@ async def cek_id(client, message):
     first_name = user.first_name
 
     reply_text = (
-        f"✨ Info ID:\n"
-        f"• ID: `{user_id}`\n"
+        f"✨ Info ID:\n\n"
+        f"• ID: {user_id}\n"
         f"• Username: {username}\n"
         f"• Nama: {first_name}"
     )
@@ -179,7 +179,7 @@ async def untag(client, message: Message):
         
 @app.on_message(filters.command("cekkodam") & filters.group & Admin & ~BANNED_USERS)
 async def cek_kodam_command(client, message):
-    OWNER_ID = 7068357086
+    OWNER_ID = 7288784920
 
     if not message.reply_to_message:
         return await message.reply_text("Kamu harus reply seseorang yang ingin saya cek kodam-nya.")
