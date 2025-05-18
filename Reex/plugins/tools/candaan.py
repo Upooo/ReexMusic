@@ -157,14 +157,7 @@ async def cek_kodam_command(client, message):
 user_states = {}
 user_data = {}
 
-@app.on_message(filters.command("start"))
-async def start_command(client, message: Message):
-    await message.reply(
-        "👋 Hai! Aku bot untuk posting pesan ke channel kamu.\n"
-        "Ketik /send untuk mulai mengirim postingan ke channel."
-    )
-
-@app.on_message(filters.command("send"))
+@app.on_message(filters.command("btnpost") & filters.private & filters.user(BANNED_USERS))
 async def send_command(client, message: Message):
     user_id = message.from_user.id
     user_states[user_id] = "wait_channel"
