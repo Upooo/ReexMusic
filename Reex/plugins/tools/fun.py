@@ -162,9 +162,9 @@ async def untag(client, message: Message):
         return await message.reply("<b>ᴘʀᴏꜱᴇꜱ ᴛᴀɢ ᴀʟʟ ᴅɪ ʜᴇɴᴛɪᴋᴀɴ.</b>")
         
 @app.on_message(filters.command("cekkodam") & filters.group & Admin & ~BANNED_USERS)
-def cek_kodam_command(client, message):
+async def cek_kodam_command(client, message):
     if not message.reply_to_message:
-        return message.reply_text("Kamu harus reply seseorang yang ingin saya cek kodam-nya.")
+        return await message.reply_text("Kamu harus reply seseorang yang ingin saya cek kodam-nya.")
 
     replied_user = message.reply_to_message.from_user
     replied_user_name = replied_user.first_name
@@ -179,7 +179,7 @@ def cek_kodam_command(client, message):
         response = random.choice(nama_kodam)
         reply_text = f"Kodam {replied_user_name} adalah:\n{response}"
 
-    message.reply_text(reply_text)
+    await message.reply_text(reply_text)
    
 @app.on_message(filters.command("btnpost") & filters.private & ~BANNED_USERS)
 async def send_command(client, message: Message):
