@@ -40,8 +40,8 @@ async def auto_leave():
                 except:
                     pass
 
-
-asyncio.create_task(auto_leave())
+if config.AUTO_LEAVING_ASSISTANT:
+    asyncio.create_task(auto_leave())
 
 
 async def auto_end():
