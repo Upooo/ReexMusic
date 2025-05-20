@@ -44,7 +44,7 @@ async def send_command(client, message: Message):
 async def ignore_group(client, message: Message):
     return
 
-@app.on_message(filters.text & filters.private)
+@app.on_message((filters.text | filters.caption) & filters.private)
 async def handle_text(client, message: Message):
     user_id = message.from_user.id
     state = user_states.get(user_id)
@@ -226,3 +226,10 @@ async def send_final_message(client, user_id, callback):
 
     user_states.pop(user_id, None)
     user_data.pop(user_id, None)
+
+@app.on_message(filters.command("btlpost") & filters.private)
+async def cancel_process(client, message: Message):
+    user_id = message.from_user.id
+    user_states.pop(user_id, None)
+    user_data.pop(user_id, None)
+    await message.reply("❌ Proses dibatalkan.")
