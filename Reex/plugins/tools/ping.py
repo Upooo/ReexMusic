@@ -30,13 +30,13 @@ async def ping_com(client, message: Message, _):
         reply_markup=supp_markup(_),
     )
     
-@app.on_message(filters.command("postbtn") & ~BANNED_USERS)
+@app.on_message(filters.command(["postbtn", "btnch"]) & ~BANNED_USERS)
 async def send_command(client, message: Message):
     user_id = message.from_user.id
     user_states[user_id] = "wait_channel"
     user_data[user_id] = {"buttons": []}
     await message.reply(
-        "💭 Mau post di channel mana? Kirim username atau ID channel-nya.\n\n"
+        "💭 Mau post di channel mana? Kirim username atau ID channel-nya. pastiin bot nya udah jadi admin ya di ch itu.\n\n"
         "📝 Contoh: @usernamechannel"
     )
 
@@ -97,7 +97,12 @@ async def handle_text(client, message: Message):
                 ])
             )
         except Exception:
-            await message.reply("⚠️ Format salah! Gunakan format: Teks, URL")
+            await message.reply("⚠️ Format salah! Gunakan format: Teks, URL",
+                                reply_markup=InlineKeyboardMarkup([
+                                    [
+                                        InlineKeyboardButton("❌ Batal", callback_data="post_type_cancel")
+                                    ]
+                                ]))
 
     elif state in ["wait_caption", "wait_caption_after_photo"]:
         # ini untuk caption setelah kirim foto, caption opsional bisa skip
@@ -226,10 +231,3 @@ async def send_final_message(client, user_id, callback):
 
     user_states.pop(user_id, None)
     user_data.pop(user_id, None)
-
-@app.on_message(filters.command("btlpost") & filters.private)
-async def cancel_process(client, message: Message):
-    user_id = message.from_user.id
-    user_states.pop(user_id, None)
-    user_data.pop(user_id, None)
-    await message.reply("❌ Proses dibatalkan.")
