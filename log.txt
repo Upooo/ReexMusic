@@ -216,3 +216,10 @@ Don't forget to visit @FallenAssociation
 [04-Jun-25 09:14:23 - INFO] - Reex.misc - Sudoers Loaded.
 [10-Jun-25 00:02:04 - INFO] - Reex.core.mongo - Connecting to your Mongo Database...
 [10-Jun-25 00:02:13 - ERROR] - Reex.core.mongo - Failed to connect to your Mongo Database.
+[10-Jun-25 02:44:23 - INFO] - Reex.core.mongo - Connecting to your Mongo Database...
+[10-Jun-25 02:44:25 - INFO] - Reex.core.mongo - Connected to your Mongo Database.
+[10-Jun-25 02:44:25 - INFO] - Reex.core.dir - Directories Updated.
+[10-Jun-25 02:44:25 - INFO] - Reex.core.git - Git Client Found [VPS DEPLOYER]
+[10-Jun-25 02:44:25 - INFO] - Reex.misc - Local Database Initialized.
+[10-Jun-25 02:44:25 - INFO] - Reex.core.bot - Starting Bot...
+[10-Jun-25 02:44:35 - INFO] - Reex.misc - Sudoers Loaded.
