@@ -177,27 +177,41 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        ydl_optssx = {"quiet": True}
-        with yt_dlp.YoutubeDL(ydl_optssx) as ydl:
-            formats_available = []
-            r = ydl.extract_info(link, download=False)
-            formats_available = []
-            for fmt in r.get("formats", []):
-                if "dash" in fmt.get("format", "").lower():
-                    continue
-                if not all(key in fmt for key in ("format", "filesize", "format_id", "ext", "format_note")):
-                    continue
-                formats_available.append(
-                    {
-                        "format": fmt["format"],
-                        "filesize": fmt["filesize"],
-                        "format_id": fmt["format_id"],
-                        "ext": fmt["ext"],
-                        "format_note": fmt["format_note"],
+        
+        ydl_opts = {
+            "quiet": True,
+            "skip_download": True,
+            "nocheckcertificate": True,
+            "extract_flat": False,
+            "force_generic_extractor": False,
+        }
+
+        formats_available = []
+
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(link, download=False)
+
+                for fmt in info.get("formats", []):
+                    # Hanya format yang memiliki URL dan ukuran file
+                    if not fmt.get("url") or not fmt.get("filesize"):
+                        continue
+                    if "dash" in fmt.get("format", "").lower():
+                        continue
+                    formats_available.append({
+                        "format": fmt.get("format"),
+                        "filesize": fmt.get("filesize"),
+                        "format_id": fmt.get("format_id"),
+                        "ext": fmt.get("ext"),
+                        "format_note": fmt.get("format_note"),
                         "yturl": link,
-                    }
-                )
+                    })
+
+        except Exception as e:
+            print(f"[ERROR] Gagal ekstrak info yt: {e}")
+
         return formats_available, link
+
 
     async def slider(
         self,
